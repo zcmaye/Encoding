@@ -129,3 +129,12 @@
       return 0;
   }
   ```
+
+
+
+## C11中的Unicode
+
+[[C11中的Unicode](https://www.cnblogs.com/zenny-chen/p/3985324.html)](https://www.cnblogs.com/zenny-chen/p/3985324.html)
+
+[不依赖任何系统API,用c语言实现gbk/utf8/unicode编码转换](https://blog.csdn.net/bladeandmaster88/article/details/54837338?utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Edefault-15.control&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Edefault-15.control)
+
