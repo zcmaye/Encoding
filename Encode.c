@@ -1,4 +1,4 @@
-#include"Encode.h"
+ï»¿#include"Encode.h"
 #include<stdbool.h>
 #include<malloc.h>
 
@@ -10,20 +10,20 @@ const char* base64Encode(const char* data, size_t len)
 		return NULL;
 	uint8_t const* srcStr = (uint8_t const*)data;
 
-	//ÒÔ24Bit(3¸ö×Ö½Ú)Îªµ¥Î»»®·Ö,dataÄÜ¹»»®·Ö³É¶àÉÙ¿é
+	//ä»¥24Bit(3ä¸ªå­—èŠ‚)ä¸ºå•ä½åˆ’åˆ†,dataèƒ½å¤Ÿåˆ’åˆ†æˆå¤šå°‘å—
 	uint32_t dataBlock = len / 3;
-	//ÅĞ¶Ï»®·ÖÖ®ºóÓĞÃ»ÓĞÊ£ÓàµÄ×Ö½Ú(Ê£ÓàµÄ×Ö½ÚĞèÒªÌî³ä=)
+	//åˆ¤æ–­åˆ’åˆ†ä¹‹åæœ‰æ²¡æœ‰å‰©ä½™çš„å­—èŠ‚(å‰©ä½™çš„å­—èŠ‚éœ€è¦å¡«å……=)
 	bool havePadding = len % 3;		//0 1
 	size_t paddingByte = len % 3;
-	//¼ÆËã±àÂëÖ®ºó×Ü×Ö½ÚÊı,ÓĞÊ£ÓàµÄ²¹ÉÏÒ»¸öµ¥Î»£¨dataÖĞÈı¸ö×Ö·û±ä³ÉËÄ¸ö×Ö·û£©
+	//è®¡ç®—ç¼–ç ä¹‹åæ€»å­—èŠ‚æ•°,æœ‰å‰©ä½™çš„è¡¥ä¸Šä¸€ä¸ªå•ä½ï¼ˆdataä¸­ä¸‰ä¸ªå­—ç¬¦å˜æˆå››ä¸ªå­—ç¬¦ï¼‰
 	uint32_t resultByte = 4 * (dataBlock + havePadding);
 
-	//ÉêÇëÄÚ´æ´æ·Å±àÂëÖ®ºóµÄÊı¾İ,¶àÉêÇëÈı¸ö×Ö½ÚÇ°Á½¸öÓÃÀ´Ìî³ä=£¬×îºóÒ»¸öÓÃÀ´´æ·Å\0
+	//ç”³è¯·å†…å­˜å­˜æ”¾ç¼–ç ä¹‹åçš„æ•°æ®,å¤šç”³è¯·ä¸‰ä¸ªå­—èŠ‚å‰ä¸¤ä¸ªç”¨æ¥å¡«å……=ï¼Œæœ€åä¸€ä¸ªç”¨æ¥å­˜æ”¾\0
 	char* encode = calloc(resultByte + 3, sizeof(char));
 	if (encode == NULL)
 		return	NULL;
 
-	//°ÑdataµÄÈı¸ö×Ö½Ú×ª»¯Îªbase64µÄËÄ¸ö×Ö·û
+	//æŠŠdataçš„ä¸‰ä¸ªå­—èŠ‚è½¬åŒ–ä¸ºbase64çš„å››ä¸ªå­—ç¬¦
 	size_t i = 0;
 	for (; i < dataBlock; ++i)
 	{
@@ -33,30 +33,30 @@ const char* base64Encode(const char* data, size_t len)
 		encode[4 * i + 3] = base64Char[srcStr[3 * i + 2] & 0x3F];								//6
 	}
 
-	//´¦ÀíÊ£ÏÂµÄ×Ö½Ú(Ö»¿ÉÄÜÊ£ÏÂ0¸ö£¬1¸ö»òÕß2¸ö)
+	//å¤„ç†å‰©ä¸‹çš„å­—èŠ‚(åªå¯èƒ½å‰©ä¸‹0ä¸ªï¼Œ1ä¸ªæˆ–è€…2ä¸ª)
 	if (havePadding)
 	{
 		encode[4 * i + 0] = base64Char[srcStr[3 * i] >> 2];
-		if (paddingByte == 1)		//ÁôÏÂÒ»¸ö×Ö½Ú²¹Á½¸ö×Ö½Ú
+		if (paddingByte == 1)		//ç•™ä¸‹ä¸€ä¸ªå­—èŠ‚è¡¥ä¸¤ä¸ªå­—èŠ‚
 		{
 			encode[4 * i + 1] = base64Char[(srcStr[3 * i] & 0x3) << 4];
 			encode[4 * i + 2] = '=';
 		}
-		else if (paddingByte == 2)	//ÁôÏÂÁ½¸ö×Ö½Ú²¹Ò»¸ö×Ö½Ú
+		else if (paddingByte == 2)	//ç•™ä¸‹ä¸¤ä¸ªå­—èŠ‚è¡¥ä¸€ä¸ªå­—èŠ‚
 		{
 			encode[4 * i + 1] = base64Char[((srcStr[3 * i] & 0x3) << 4) | srcStr[3 * i + 1] >> 4];
 			encode[4 * i + 2] = base64Char[(srcStr[3 * i + 1] & 0xF) << 2];
 		}
 		encode[4 * i + 3] = '=';
 	}
-	//ÉêÇëÄÚ´æÊ±È«²¿³õÊ¼»¯Îª0ÁË£¬ÕâÀï²»ĞèÒªÔÙ²¹\0
+	//ç”³è¯·å†…å­˜æ—¶å…¨éƒ¨åˆå§‹åŒ–ä¸º0äº†ï¼Œè¿™é‡Œä¸éœ€è¦å†è¡¥\0
 	//encode[resultByte] = '\n';
 	return encode;
 }
 
 
-/*@Url±àÂë*/
-//Ê®Áù½øÖÆ×Ö·û×ªÊ®½øÖÆ
+/*@Urlç¼–ç */
+//åå…­è¿›åˆ¶å­—ç¬¦è½¬åè¿›åˆ¶
 static int hexToDec(char hex)
 {
 	if ('0' <= hex && hex <= '9')
@@ -74,7 +74,7 @@ static int hexToDec(char hex)
 	return -1;
 }
 
-//Ê®½øÖÆ×ªÊ®Áù½øÖÆ×Ö·û
+//åè¿›åˆ¶è½¬åå…­è¿›åˆ¶å­—ç¬¦
 static int decToHex(uint8_t dec)
 {
 	if (0 <= dec && dec <= 9)
@@ -88,7 +88,7 @@ static int decToHex(uint8_t dec)
 	return -1;
 }
 
-//¼ì²â×Ö·ûÊÇ·ñĞèÒª±àÂë
+//æ£€æµ‹å­—ç¬¦æ˜¯å¦éœ€è¦ç¼–ç 
 static bool needCoding(char c)
 {
 	if (
@@ -110,7 +110,7 @@ const char* urlEncode(const char* data, size_t len)
 	for (size_t i = 0; i < len; ++i)
 	{
 		char c = data[i];
-		//²»ĞèÒª±àÂëÖ±½Ó´æ´¢
+		//ä¸éœ€è¦ç¼–ç ç›´æ¥å­˜å‚¨
 		if (!needCoding(c))
 		{
 			urlCode[url_i++] = c;
@@ -155,85 +155,85 @@ const char* urlDecode(const char* data, size_t len)
 }
 
 
-/*@×Ö·û×ªÂë*/
+/*@å­—ç¬¦è½¬ç */
 int unicodeToUtf8(char* pInput, char* pOutput)
 {
-	int len = 0; //¼ÇÂ¼×ª»»ºóµÄUtf8×Ö·û´®µÄ×Ö½ÚÊı
+	int len = 0; //è®°å½•è½¬æ¢åçš„Utf8å­—ç¬¦ä¸²çš„å­—èŠ‚æ•°
 	while (*pInput)
 	{
-		//´¦ÀíÒ»¸öunicode×Ö·û
-		char low = *pInput;//È¡³öunicode×Ö·ûµÄµÍ8Î»
+		//å¤„ç†ä¸€ä¸ªunicodeå­—ç¬¦
+		char low = *pInput;//å–å‡ºunicodeå­—ç¬¦çš„ä½8ä½
 		pInput++;
-		char high = *pInput;//È¡³öunicode×Ö·ûµÄ¸ß8Î»
+		char high = *pInput;//å–å‡ºunicodeå­—ç¬¦çš„é«˜8ä½
 		int w = high << 8;
-		unsigned  wchar = (high << 8) + low;//¸ß8Î»ºÍµÍ8Î»×é³ÉÒ»¸öunicode×Ö·û,¼Ó·¨ÔËËã¼¶±ğ¸ß
+		unsigned  wchar = (high << 8) + low;//é«˜8ä½å’Œä½8ä½ç»„æˆä¸€ä¸ªunicodeå­—ç¬¦,åŠ æ³•è¿ç®—çº§åˆ«é«˜
 
-		if (wchar <= 0x7F) //Ó¢ÎÄ×Ö·û
+		if (wchar <= 0x7F) //è‹±æ–‡å­—ç¬¦
 		{
-			pOutput[len] = (char)wchar;  //È¡wcharµÄµÍ8Î»
+			pOutput[len] = (char)wchar;  //å–wcharçš„ä½8ä½
 			len++;
 		}
-		else if (wchar >= 0x80 && wchar <= 0x7FF)  //¿ÉÒÔ×ª»»³ÉË«×Ö½ÚpOutput×Ö·û
+		else if (wchar >= 0x80 && wchar <= 0x7FF)  //å¯ä»¥è½¬æ¢æˆåŒå­—èŠ‚pOutputå­—ç¬¦
 		{
-			pOutput[len] = 0xc0 | ((wchar >> 6) & 0x1f);  //È¡³öunicode±àÂëµÍ6Î»ºóµÄ5Î»£¬Ìî³äµ½110yyyyy 10zzzzzz µÄyyyyyÖĞ
+			pOutput[len] = 0xc0 | ((wchar >> 6) & 0x1f);  //å–å‡ºunicodeç¼–ç ä½6ä½åçš„5ä½ï¼Œå¡«å……åˆ°110yyyyy 10zzzzzz çš„yyyyyä¸­
 			len++;
-			pOutput[len] = 0x80 | (wchar & 0x3f);  //È¡³öunicode±àÂëµÄµÍ6Î»£¬Ìî³äµ½110yyyyy 10zzzzzz µÄzzzzzzÖĞ
+			pOutput[len] = 0x80 | (wchar & 0x3f);  //å–å‡ºunicodeç¼–ç çš„ä½6ä½ï¼Œå¡«å……åˆ°110yyyyy 10zzzzzz çš„zzzzzzä¸­
 			len++;
 		}
-		else if (wchar >= 0x800 && wchar < 0xFFFF)  //¿ÉÒÔ×ª»»³É3¸ö×Ö½ÚµÄpOutput×Ö·û
+		else if (wchar >= 0x800 && wchar < 0xFFFF)  //å¯ä»¥è½¬æ¢æˆ3ä¸ªå­—èŠ‚çš„pOutputå­—ç¬¦
 		{
-			pOutput[len] = 0xe0 | ((wchar >> 12) & 0x0f);  //¸ßËÄÎ»ÌîÈë1110xxxx 10yyyyyy 10zzzzzzÖĞµÄxxxx
+			pOutput[len] = 0xe0 | ((wchar >> 12) & 0x0f);  //é«˜å››ä½å¡«å…¥1110xxxx 10yyyyyy 10zzzzzzä¸­çš„xxxx
 			len++;
-			pOutput[len] = 0x80 | ((wchar >> 6) & 0x3f);  //ÖĞ¼ä6Î»ÌîÈë1110xxxx 10yyyyyy 10zzzzzzÖĞµÄyyyyyy
+			pOutput[len] = 0x80 | ((wchar >> 6) & 0x3f);  //ä¸­é—´6ä½å¡«å…¥1110xxxx 10yyyyyy 10zzzzzzä¸­çš„yyyyyy
 			len++;
-			pOutput[len] = 0x80 | (wchar & 0x3f);  //µÍ6Î»ÌîÈë1110xxxx 10yyyyyy 10zzzzzzÖĞµÄzzzzzz
+			pOutput[len] = 0x80 | (wchar & 0x3f);  //ä½6ä½å¡«å…¥1110xxxx 10yyyyyy 10zzzzzzä¸­çš„zzzzzz
 			len++;
 		}
 
-		else //¶ÔÓÚÆäËû×Ö½ÚÊıµÄunicode×Ö·û²»½øĞĞ´¦Àí
+		else //å¯¹äºå…¶ä»–å­—èŠ‚æ•°çš„unicodeå­—ç¬¦ä¸è¿›è¡Œå¤„ç†
 		{
 			return -1;
 		}
-		pInput++;//´¦ÀíÏÂÒ»¸öunicode×Ö·û
+		pInput++;//å¤„ç†ä¸‹ä¸€ä¸ªunicodeå­—ç¬¦
 	}
-	//utf8×Ö·û´®ºóÃæ£¬ÓĞ¸ö\0
+	//utf8å­—ç¬¦ä¸²åé¢ï¼Œæœ‰ä¸ª\0
 	pOutput[len] = 0;
 	return len;
 }
 /*************************************************************************************************
-* ½«UTF8±àÂë×ª»»³ÉUnicode£¨UCS-2LE£©±àÂë  µÍµØÖ·´æµÍÎ»×Ö½Ú
-* ²ÎÊı£º
-*    char* pInput     ÊäÈë×Ö·û´®
-*    char*pOutput   Êä³ö×Ö·û´®
-* ·µ»ØÖµ£º×ª»»ºóµÄUnicode×Ö·û´®µÄ×Ö½ÚÊı£¬Èç¹û³ö´íÔò·µ»Ø-1
+* å°†UTF8ç¼–ç è½¬æ¢æˆUnicodeï¼ˆUCS-2LEï¼‰ç¼–ç   ä½åœ°å€å­˜ä½ä½å­—èŠ‚
+* å‚æ•°ï¼š
+*    char* pInput     è¾“å…¥å­—ç¬¦ä¸²
+*    char*pOutput   è¾“å‡ºå­—ç¬¦ä¸²
+* è¿”å›å€¼ï¼šè½¬æ¢åçš„Unicodeå­—ç¬¦ä¸²çš„å­—èŠ‚æ•°ï¼Œå¦‚æœå‡ºé”™åˆ™è¿”å›-1
 **************************************************************************************************/
 int utf8ToUnicode(char* pInput, char* pOutput)
 {
-	int outputSize = 0; //¼ÇÂ¼×ª»»ºóµÄUnicode×Ö·û´®µÄ×Ö½ÚÊı
+	int outputSize = 0; //è®°å½•è½¬æ¢åçš„Unicodeå­—ç¬¦ä¸²çš„å­—èŠ‚æ•°
 
 	while (*pInput)
 	{
-		if (*pInput > 0x00 && *pInput <= 0x7F) //´¦Àíµ¥×Ö½ÚUTF8×Ö·û£¨Ó¢ÎÄ×ÖÄ¸¡¢Êı×Ö£©
+		if (*pInput > 0x00 && *pInput <= 0x7F) //å¤„ç†å•å­—èŠ‚UTF8å­—ç¬¦ï¼ˆè‹±æ–‡å­—æ¯ã€æ•°å­—ï¼‰
 		{
 			*pOutput = *pInput;
 			pOutput++;
-			*pOutput = 0; //Ğ¡¶Ë·¨±íÊ¾£¬ÔÚ¸ßµØÖ·Ìî²¹0
+			*pOutput = 0; //å°ç«¯æ³•è¡¨ç¤ºï¼Œåœ¨é«˜åœ°å€å¡«è¡¥0
 		}
-		else if (((*pInput) & 0xE0) == 0xC0) //´¦ÀíË«×Ö½ÚUTF8×Ö·û
+		else if (((*pInput) & 0xE0) == 0xC0) //å¤„ç†åŒå­—èŠ‚UTF8å­—ç¬¦
 		{
 			char high = *pInput;
 			pInput++;
 			char low = *pInput;
-			if ((low & 0xC0) != 0x80)  //¼ì²éÊÇ·ñÎªºÏ·¨µÄUTF8×Ö·û±íÊ¾
+			if ((low & 0xC0) != 0x80)  //æ£€æŸ¥æ˜¯å¦ä¸ºåˆæ³•çš„UTF8å­—ç¬¦è¡¨ç¤º
 			{
-				return -1; //Èç¹û²»ÊÇÔò±¨´í
+				return -1; //å¦‚æœä¸æ˜¯åˆ™æŠ¥é”™
 			}
 
 			*pOutput = (high << 6) + (low & 0x3F);
 			pOutput++;
 			*pOutput = (high >> 2) & 0x07;
 		}
-		else if (((*pInput) & 0xF0) == 0xE0) //´¦ÀíÈı×Ö½ÚUTF8×Ö·û
+		else if (((*pInput) & 0xF0) == 0xE0) //å¤„ç†ä¸‰å­—èŠ‚UTF8å­—ç¬¦
 		{
 			char high = *pInput;
 			pInput++;
@@ -244,19 +244,19 @@ int utf8ToUnicode(char* pInput, char* pOutput)
 			{
 				return -1;
 			}
-			*pOutput = (middle << 6) + (low & 0x3F);//È¡³ömiddleµÄµÍÁ½Î»ÓëlowµÄµÍ6Î»£¬×éºÏ³Éunicode×Ö·ûµÄµÍ8Î»
+			*pOutput = (middle << 6) + (low & 0x3F);//å–å‡ºmiddleçš„ä½ä¸¤ä½ä¸lowçš„ä½6ä½ï¼Œç»„åˆæˆunicodeå­—ç¬¦çš„ä½8ä½
 			pOutput++;
-			*pOutput = (high << 4) + ((middle >> 2) & 0x0F); //È¡³öhighµÄµÍËÄÎ»ÓëmiddleµÄÖĞ¼äËÄÎ»£¬×éºÏ³Éunicode×Ö·ûµÄ¸ß8Î»
+			*pOutput = (high << 4) + ((middle >> 2) & 0x0F); //å–å‡ºhighçš„ä½å››ä½ä¸middleçš„ä¸­é—´å››ä½ï¼Œç»„åˆæˆunicodeå­—ç¬¦çš„é«˜8ä½
 		}
-		else //¶ÔÓÚÆäËû×Ö½ÚÊıµÄUTF8×Ö·û²»½øĞĞ´¦Àí
+		else //å¯¹äºå…¶ä»–å­—èŠ‚æ•°çš„UTF8å­—ç¬¦ä¸è¿›è¡Œå¤„ç†
 		{
 			return -1;
 		}
-		pInput++;//´¦ÀíÏÂÒ»¸öutf8×Ö·û
+		pInput++;//å¤„ç†ä¸‹ä¸€ä¸ªutf8å­—ç¬¦
 		pOutput++;
 		outputSize += 2;
 	}
-	//unicode×Ö·û´®ºóÃæ£¬ÓĞÁ½¸ö\0
+	//unicodeå­—ç¬¦ä¸²åé¢ï¼Œæœ‰ä¸¤ä¸ª\0
 	*pOutput = 0;
 	pOutput++;
 	*pOutput = 0;
